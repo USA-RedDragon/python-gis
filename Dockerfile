@@ -10,11 +10,13 @@ RUN apk add --virtual .build-deps \
         proj-dev \
         gfortran \
         openblas-dev \
+        git \
     && apk add \
         geos \
         proj \
         proj-util \
         openblas \
+    && pip install git+https://github.com/pyproj4/pyproj.git \
     && pip install -r /tmp/requirements.txt \
     && apk del .build-deps \
     && rm -rf /tmp/* /var/cache/apk/*
