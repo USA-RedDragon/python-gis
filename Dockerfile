@@ -11,6 +11,7 @@ RUN apk add --virtual .build-deps \
         gfortran \
         openblas-dev \
         git \
+        linux-headers \
     && apk add \
         geos \
         proj \
