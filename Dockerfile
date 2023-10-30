@@ -1,25 +1,31 @@
-FROM python:3.12.0-alpine
+FROM python:3.12.0
 
 ENV PYTHONUNBUFFERED=1
 
 COPY requirements.txt /tmp/requirements.txt
 
-RUN apk add --virtual .build-deps \
-        build-base \
-        geos-dev \
-        proj-dev \
-        gfortran \
-        openblas-dev \
-        git \
-        linux-headers \
-    && apk add \
-        geos \
-        proj \
-        proj-util \
-        openblas \
-    && pip install git+https://github.com/pyproj4/pyproj.git \
-    && pip install -r /tmp/requirements.txt \
-    && apk del .build-deps \
-    && rm -rf /tmp/* /var/cache/apk/*
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install \
+      ca-certificates \
+      build-essential \
+      git \
+      libproj-dev \
+      libproj25 \
+      proj-bin \
+      libgeos-c1v5 \
+      libgeos-dev \
+      libopenblas-dev \
+      libopenblas0 \
+      python3-pyproj \
+      gfortran && \
+    pip install -r /tmp/requirements.txt && \
+    apt-get remove -y \
+      build-essential \
+      libgeos-dev \
+      libopenblas-dev \
+      git \
+      gfortran && \
+    apt-get clean && rm -rf /tmp/setup /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN rm -f /tmp/requirements.txt
